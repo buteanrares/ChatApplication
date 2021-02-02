@@ -14,6 +14,10 @@ class User:
     def setSocket(self, newSocket):
         this.socket = newSocket
 
+    def startConnection(self, ip):
+        # TODO
+        pass
+
     def sendMessage(self, message):
         # TODO
         pass
