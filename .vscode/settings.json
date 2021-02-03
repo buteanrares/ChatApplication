@@ -1,5 +1,7 @@
 {
     "autoDocstring.docstringFormat": "sphinx",
     "diffEditor.codeLens": true,
-    "typescript.referencesCodeLens.enabled": true
+    "typescript.referencesCodeLens.enabled": true,
+    "editor.defaultFormatter": "vscode.python",
+    "python.formatting.provider": "yapf"
 }
