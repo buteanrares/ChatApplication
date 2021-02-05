@@ -4,7 +4,7 @@ import json
 import os
 from requests import get
 
- 
+True
 def printClientData():
     print("\n\nFetching data...")
     clientData = get("https://ipinfo.io").text
