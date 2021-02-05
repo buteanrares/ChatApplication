@@ -1,10 +1,24 @@
 import threading
 import socket
+import json
+import os
+from requests import get
+
+
+def printClientData():
+    print("\n\nFetching data...")
+    clientData = get("https://ipinfo.io").text
+    data = json.loads(clientData)
+    print("   Public IPv4 address: {}".format(data["ip"]))
+    print("   Country: {}".format(data["country"]))
+    print("   Region: {}".format(data["region"]))
+    print("   City: {}\n\n".format(data["city"]))
 
 
 def handleSeding():
     while True:
-        msg = input("Response: ")
+        print("Response: ", end="")
+        msg = input()
         clientSocket.send(msg.encode())
 
 
@@ -15,8 +29,10 @@ def handleReceiving():
         print(recvMsg)
 
 
+printClientData()
+
 # Creare socket TCP
-ADDR = ("127.0.0.1", 55555)
+ADDR = ("25.105.200.208", 7777)
 clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 clientSocket.connect(ADDR)
 

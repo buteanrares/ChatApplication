@@ -1,16 +1,16 @@
 import socket
 import threading
+from Domain.User import User
 
 
 class Server:
     def __init__(self):
         # Constructor
         super().__init__()
-        self.ip = "127.0.0.1"
-        self.port = 55555
+        self.ip = ""
+        self.port = 7777
         self.socket = None
-        self.clients = {}
-        self.addresses = {}
+        self.users = {}
 
     def __setup(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -37,36 +37,41 @@ class Server:
 
     def __acceptIncomingConnections(self):
         while True:
-            client, clientAddress = self.socket.accept()
+            clientSocket, clientAddress = self.socket.accept()
             print("[%s:%s] has connected." % clientAddress)
-            client.send(
-                bytes("Hello. This is the server.\nType your name!", "utf8"))
-            self.addresses[client] = clientAddress
             threading.Thread(target=self.__handleClient,
-                             args=(client, )).start()
+                             args=(clientSocket, clientAddress)).start()
 
-    def __handleClient(self, client):
-        name = client.recv(1024).decode("utf8")
-        client.send(
-            bytes("You have joined the server. Type '/quit' to exit.", "utf8"))
-        message = "%s has joined the chat!" % name
-        self.__broadcast(bytes(message, "utf8"))
-        self.clients[client] = name
+    def __handleClient(self, clientSocket, clientAddress):
+        user = User(None, clientSocket, clientAddress)
+        user.getSocket().send(
+            bytes("You have joined the server. Type '/quit' to exit.\n",
+                  "utf8"))
+        user.getSocket().send(bytes("Type your name below:", "utf8"))
+        name = user.getSocket().recv(1024).decode("utf8")
+        user.setName(name)
+        self.users[name] = user
+
+        message = "%s has joined the chat!" % user.getName()
+        self.__broadcast(bytes(message, "utf8"), target="global")
         while True:
-            msg = client.recv(1024)
+            msg = user.getSocket().recv(1024)
             if msg != bytes("/quit", "utf8"):
-                self.__broadcast(msg, name + ": ")
+                self.__broadcast(msg, user.getName())
             else:
-                client.send(bytes("Goodbye.", "utf8"))
-                client.close()
-                del self.clients[client]
+                user.getSocket().send(bytes("Goodbye.", "utf8"))
+                user.getSocket().close()
+                del self.users[user.getName()]
                 self.__broadcast(
-                    bytes("%s has left the server." % name, "utf8"))
+                    bytes("%s has left the server." % user.getName(), "utf8"))
                 break
 
-    def __broadcast(self, msg, prefix=""):
-        for sock in self.clients:
-            sock.send(bytes(prefix, "utf8") + msg)
+    def __broadcast(self, msg, sender=None, target=None):
+        for user in self.users.values():
+            if (user.getName() != sender and target == None):
+                user.getSocket().send(bytes(sender + ": ", "utf8") + msg)
+            elif target == "global":
+                user.getSocket().send(msg)
 
     def start(self):
         # Functia principala - creaza si porneste thread-ul pt fiecare client nou conectat
