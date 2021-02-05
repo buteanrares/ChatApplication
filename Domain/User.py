@@ -1,18 +1,23 @@
 class User:
-    
-    def __init__(self,username,socket):
+    def __init__(self, name, socket, address):
         super().__init__()
-        self.username = username
+        self.name = name
         self.socket = socket
-    
-    def getUsername(self):
-        return self.username
+
+    def getName(self):
+        return self.name
 
     def getSocket(self):
         return self.socket
 
+    def getAddress(self):
+        return self.address
+
     def setSocket(self, newSocket):
-        this.socket = newSocket
+        self.socket = newSocket
+
+    def setName(self, newName):
+        self.name = newName
 
     def startConnection(self, ip):
         # TODO
