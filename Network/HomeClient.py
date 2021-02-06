@@ -6,7 +6,7 @@ from requests import get
 
 
 def printClientData():
-    print("\n\nFetching data...")
+    print("\nFetching data...")
     clientData = get("https://ipinfo.io").text
     data = json.loads(clientData)
     print("   Public IPv4 address: {}".format(data["ip"]))
