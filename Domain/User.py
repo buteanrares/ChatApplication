@@ -10,9 +10,6 @@ class User:
     def getSocket(self):
         return self.socket
 
-    def getAddress(self):
-        return self.address
-
     def setSocket(self, newSocket):
         self.socket = newSocket
 

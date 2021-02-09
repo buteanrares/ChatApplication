@@ -3,5 +3,3 @@ class Service:
         super().__init__()
         self.repository = repository
         self.server = server
-        
-    def 
