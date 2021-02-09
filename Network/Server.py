@@ -1,6 +1,6 @@
 import socket
 import threading
-from Domain.User import User
+from Domain import User
 
 
 class Server:
