@@ -1,7 +1,9 @@
 {
-    "autoDocstring.docstringFormat": "sphinx",
-    "diffEditor.codeLens": true,
-    "typescript.referencesCodeLens.enabled": true,
-    "editor.defaultFormatter": "vscode.python",
-    "python.formatting.provider": "yapf"
+    "python.pythonPath": "c:\\Users\\butea\\VSCodeProjects\\Python\\ChatApplication\\.venv\\Scripts\\python.exe",
+    "python.autoComplete.extraPaths": [
+        "${workspaceRoot}\\Domain"
+    ],
+    "python.analysis.extraPaths": [
+        "${workspaceRoot}\\Domain"
+    ],
 }

@@ -1,7 +1,6 @@
 import threading
 import socket
 import json
-import os
 from requests import get
 
 
