@@ -2,6 +2,7 @@ import socket
 import threading
 from Domain.User import User
 import pyaudio
+import select
 
 
 # Audio constants 
@@ -18,13 +19,13 @@ class Server:
         self.port = 7777
         self.socket = None
         self.users = {}
-        self.pyaudio=pyaudio.PyAudio()
-        self.read_list = []
+        self.pyaudio = pyaudio.PyAudio()
+        self.audioStream=None
+
 
     def __setup(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind((self.ip, self.port))
-        self.read_list=[self.socket]
 
     def getSocket(self):
         return self.socket
@@ -83,14 +84,14 @@ class Server:
             elif target == "global":
                 user.getSocket().send(msg)
 
-    def callback(self, in_data, frame_count, time_info, status):
-        for s in self.read_list[1:]:
-            s.send(in_data)
-        return (None, pyaudio.paContinue)
-
     def startRecording(self):
-        self.stream = self.pyaudio.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK, stream_callback=self.callback)
-        self.stream.start_stream()
+        self.audioStream = self.pyaudio.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK, stream_callback=self.sendAudio)
+
+
+    def sendAudio(self, in_data, frame_count, time_info, status):
+        for user in self.users.values():
+            user.getSocket().send(in_data)
+        return (None,pyaudio.paContinue)
 
 
     def start(self):
@@ -99,14 +100,17 @@ class Server:
         self.__setup()
         self.socket.listen(5)
         print("\nWaiting for clients...")
+
+        self.startRecording()
+
         accept_thread = threading.Thread(
             target=self.__acceptIncomingConnections)
-        sendAudio_thread = threading.Thread(target=self.startRecording)
+        #record_thread = threading.Thread(target=self.sendAudio)
         
         accept_thread.start()
-        sendAudio_thread.start()
-
+        #record_thread.start()
+        
         accept_thread.join()
-        sendAudio_thread.join()
+        #record_thread.join()
 
         self.socket.close()
