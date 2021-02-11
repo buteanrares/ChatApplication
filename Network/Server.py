@@ -1,7 +1,14 @@
 import socket
 import threading
 from Domain.User import User
+import pyaudio
 
+
+# Audio constants 
+FORMAT = pyaudio.paInt16
+CHANNELS = 1
+RATE = 44100
+CHUNK = 4096
 
 class Server:
     def __init__(self):
@@ -11,10 +18,13 @@ class Server:
         self.port = 7777
         self.socket = None
         self.users = {}
+        self.pyaudio=pyaudio.PyAudio()
+        self.read_list = []
 
     def __setup(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind((self.ip, self.port))
+        self.read_list=[self.socket]
 
     def getSocket(self):
         return self.socket
@@ -73,6 +83,16 @@ class Server:
             elif target == "global":
                 user.getSocket().send(msg)
 
+    def callback(self, in_data, frame_count, time_info, status):
+        for s in self.read_list[1:]:
+            s.send(in_data)
+        return (None, pyaudio.paContinue)
+
+    def startRecording(self):
+        self.stream = self.pyaudio.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK, stream_callback=self.callback)
+        self.stream.start_stream()
+
+
     def start(self):
         # Functia principala - creaza si porneste thread-ul pt fiecare client nou conectat
 
@@ -81,6 +101,12 @@ class Server:
         print("\nWaiting for clients...")
         accept_thread = threading.Thread(
             target=self.__acceptIncomingConnections)
+        sendAudio_thread = threading.Thread(target=self.startRecording)
+        
         accept_thread.start()
+        sendAudio_thread.start()
+
         accept_thread.join()
+        sendAudio_thread.join()
+
         self.socket.close()
