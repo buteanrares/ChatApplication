@@ -23,10 +23,8 @@ class Client:
         self.clientSocket.connect(ADDR)
 
         #Audio fields
-        py_audio = pyaudio.PyAudio()
-        self.output_stream = py_audio.open(format=FORMAT, channels=CHANNELS, rate=RATE, output=True, frames_per_buffer=CHUNK)
-        self.input_stream = py_audio.open(format=FORMAT, channels=CHANNELS, rate=RATE, output=True, frames_per_buffer=CHUNK)
-    
+        self.pyaudio = pyaudio.PyAudio()
+        self.stream=None
     
     @staticmethod
     def printClientData():
@@ -38,11 +36,9 @@ class Client:
         print("   Region: {}".format(data["region"]))
         print("   City: {}\n\n".format(data["city"]))
 
-    
-    def handleReceiveAudio(self):
-        while True:
-            data = self.clientSocket.recv(CHUNK)
-            self.input_stream.write(data)
+
+    def handleStartAudioStream(self):
+        self.stream = self.pyaudio.open(format=FORMAT, channels=CHANNELS, rate=RATE, output=True, frames_per_buffer=CHUNK)
 
 
     def handleSend(self):
@@ -59,17 +55,24 @@ class Client:
             print(recvMsg)
 
 
+    def handleReceiveAudio(self):
+        while True:
+            data = self.clientSocket.recv(CHUNK)
+            self.stream.write(data)
+
+
     def run(self):
         self.printClientData()
+        self.handleStartAudioStream()
 
         send_thread = threading.Thread(target=self.handleSend)
         receiveText_thread = threading.Thread(target=self.handleReceiveText)
         receiveAudio_thread = threading.Thread(target=self.handleReceiveAudio)
-        
+
         send_thread.start()
         receiveText_thread.start()
         receiveAudio_thread.start()
-        
+
         send_thread.join()
         receiveText_thread.join()
         receiveAudio_thread.join()
