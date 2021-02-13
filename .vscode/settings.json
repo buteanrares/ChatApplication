@@ -1,9 +1,14 @@
 {
-    "python.pythonPath": "c:\\Users\\butea\\VSCodeProjects\\Python\\ChatApplication\\.venv\\Scripts\\python.exe",
+    "python.pythonPath": ".venv\\Scripts\\python.exe",
     "python.autoComplete.extraPaths": [
-        "${workspaceRoot}\\Domain"
+        "${workspaceRoot}\\Domain",
+        "${workspaceRoot}\\Network",
+        "${workspaceRoot}\\Network\\Sockets"
     ],
     "python.analysis.extraPaths": [
-        "${workspaceRoot}\\Domain"
+        "${workspaceRoot}\\Domain",
+        "${workspaceRoot}\\Network",
+        "${workspaceRoot}\\Network\\Sockets"
     ],
+    "python.envFile": "${workspaceFolder}/.env",
 }
