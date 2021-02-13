@@ -1,65 +1,72 @@
 import socket
 import threading
 from Domain.User import User
-import pyaudio
 
 
-# Audio constants 
-FORMAT = pyaudio.paInt16
-CHANNELS = 1
-RATE = 44100
-CHUNK = 4096
+TEXTADDR=("",30310)
+AUDIOADDR=("",30311)
 
 class Server:
     def __init__(self):
         # Constructor
         super().__init__()
-        self.ip = ""
-        self.port = 7776
-        self.socket = None
+        self.audioConnections=[]
         self.users = {}
-        self.pyaudio = pyaudio.PyAudio()
-        self.audioStream=None
+        self.TextSocket=None
+        self.AudioSocket=None
 
 
-    def __setup(self):
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.bind((self.ip, self.port))
+    def setup(self):
+        self.TextSocket=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        self.TextSocket.bind(TEXTADDR)
+
+        self.AudioSocket=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        self.AudioSocket.bind(AUDIOADDR)
 
 
-    def getSocket(self):
-        return self.socket
+    #
+    # AUDIO HANDLING
+    #
 
-
-    def getIP(self):
-        """Getter for the IP attribute
-
-        :return: IP
-        :rtype: string
-        """
-        return self.ip
-
-
-    def getPort(self):
-        """Getter for the port attribute
-
-        :return: port
-        :rtype: int
-        """
-        return self.port
-
-
-    def __acceptIncomingConnections(self):
+    def acceptAudioConnections(self):
+        self.AudioSocket.listen(100)
         while True:
-            textSocket, clientAddress = self.socket.accept()
-            audioSocket, clientAddress = self.socket.accept()
+            c, addr = self.AudioSocket.accept()
+            print("New AUDIO socket connection")
+            self.audioConnections.append(c)
+            threading.Thread(target=self.handleClientAudio,args=(c,addr,)).start()
+
+
+    def broadcastAudio(self, sock, data):
+        for client in self.audioConnections:
+            if client != self.AudioSocket and client != sock:
+                try:
+                    client.send(data)
+                except:
+                    pass
+
+
+    def handleClientAudio(self,c,addr):
+        while True:
+            data = c.recv(4096)
+            self.broadcastAudio(c, data)
+
+
+    #
+    # TEXT HANDLING
+    #
+
+    def acceptTextConnections(self):
+        self.TextSocket.listen(100)
+        while True:
+            textSocket, clientAddress = self.TextSocket.accept()
+            print("New TEXT socket connection")
             print("[%s:%s] has connected." % clientAddress)
-            threading.Thread(target=self.__handleClient,
-                             args=(textSocket, audioSocket, clientAddress)).start()
+            threading.Thread(target=self.handleClientText, args=(textSocket, clientAddress)).start()
 
 
-    def __handleClient(self, textSocket, audioSocket, clientAddress):
-        user = User(None, textSocket, audioSocket, clientAddress)
+    def handleClientText(self, textSocket, clientAddress):
+        user = User(None, textSocket, None, clientAddress)
         user.getTextSocket().send(bytes("You have joined the server. Type '/quit' to exit.\n", "utf8"))
         user.getTextSocket().send(bytes("Type your name below:", "utf8"))
         name = user.getTextSocket().recv(1024).decode("utf8")
@@ -67,21 +74,21 @@ class Server:
         self.users[name] = user
 
         message = "%s has joined the chat!" % user.getName()
-        self.__broadcast(bytes(message, "utf8"), target="global")
+        self.broadcastText(bytes(message, "utf8"), target="global")
         while True:
             msg = user.getTextSocket().recv(1024)
             if msg != bytes("/quit", "utf8"):
-                self.__broadcast(msg, user.getName())
+                self.broadcastText(msg, user.getName())
             else:
                 user.getTextSocket().send(bytes("Goodbye.", "utf8"))
                 user.getTextSocket().close()
                 del self.users[user.getName()]
-                self.__broadcast(
+                self.broadcastText(
                     bytes("%s has left the server." % user.getName(), "utf8"))
                 break
 
 
-    def __broadcast(self, msg, sender=None, target=None):
+    def broadcastText(self, msg, sender=None, target=None):
         for user in self.users.values():
             if (user.getName() != sender and target == None):
                 user.getTextSocket().send(bytes(sender + ": ", "utf8") + msg)
@@ -89,28 +96,11 @@ class Server:
                 user.getTextSocket().send(msg)
 
 
-    def startRecording(self):
-        self.audioStream = self.pyaudio.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK, stream_callback=self.sendAudio)
-
-
-    def sendAudio(self, in_data, frame_count, time_info, status):
-        for user in self.users.values():
-            user.getAudioSocket().send(in_data)
-        return (None,pyaudio.paContinue)
-
-
     def start(self):
         # Functia principala - creaza si porneste thread-ul pt fiecare client nou conectat
 
-        self.__setup()
-        self.socket.listen(5)
+        self.setup()
         print("\nWaiting for clients...")
-
-        self.startRecording()
-
-        accept_thread = threading.Thread(
-            target=self.__acceptIncomingConnections)
+        threading.Thread(target=self.acceptTextConnections).start()
+        threading.Thread(target=self.acceptAudioConnections).start()
         
-        accept_thread.start()
-        accept_thread.join()
-        self.socket.close()

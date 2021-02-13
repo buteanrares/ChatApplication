@@ -1,10 +1,11 @@
 import socket
 import pyaudio
+import threading
 
-FORMAT = pyaudio.paInt16
-CHANNELS = 1
-RATE = 44100
-CHUNK = 4096
+chunk_size = 4096 # 512
+audio_format = pyaudio.paInt16
+channels = 1
+rate = 20000
 
 class AudioSocket:
 
@@ -12,15 +13,27 @@ class AudioSocket:
         self.socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.socket.connect(ADDR)
 
-        self.audio = pyaudio.PyAudio()
-        self.audioStream = None
+        self.p = pyaudio.PyAudio()
+        self.playing_stream = self.p.open(format=audio_format, channels=channels, rate=rate, output=True, frames_per_buffer=chunk_size)
+        self.recording_stream = self.p.open(format=audio_format, channels=channels, rate=rate, input=True, frames_per_buffer=chunk_size)
+        
+        # start threads
+        receive_thread = threading.Thread(target=self.receive_server_data).start()
+        self.send_data_to_server()
 
-    def startAudioStream(self):
-        self.audioStream =self.audio.open(format=FORMAT, channels=CHANNELS, rate=RATE, output=True, frames_per_buffer=CHUNK)
-    
-    
-    def receiveAudio(self):
+    def receive_server_data(self):
         while True:
-            data = self.socket.recv(CHUNK)
-            self.audioStream.write(data)
+            try:
+                data = self.socket.recv(4096)
+                self.playing_stream.write(data)
+            except:
+                pass
 
+
+    def send_data_to_server(self):
+        while True:
+            try:
+                data = self.recording_stream.read(4096)
+                self.socket.sendall(data)
+            except:
+                pass
