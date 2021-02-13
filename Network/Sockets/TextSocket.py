@@ -5,29 +5,22 @@ class TextSocket:
     def __init__(self,ADDR) -> None:
         self.socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.socket.connect(ADDR)
-        self.sendText_thread = None
-        self.receiveText_thread = None
+        
+        self.sendText_thread = threading.Thread(target=self.sendText).start()
+        self.receiveText_thread = threading.Thread(target=self.receiveText).start()
 
 
     def sendText(self):
         while True:
+            #print("TEXT SEND WORKING")
             print("Response: ", end="")
             msg = input()
-            self.clientSocket.send(msg.encode())
+            self.socket.send(msg.encode())
     
+
     def receiveText(self):
         while True:
-            recvMsg = self.clientSocket.recv(1024)
+            #print("TEXT RECEIVE WORKING")
+            recvMsg = self.socket.recv(1024)
             recvMsg = recvMsg.decode()
             print(recvMsg)
-
-    def startTextThreads(self):
-        self.sendText_thread = threading.Thread(target=self.handleSend)
-        self.receiveText_thread = threading.Thread(target=self.handleReceiveText)
-
-        self.sendText_thread.start()
-        self.receiveText_thread.start()
-
-    def stopTextThreads(self):
-        self.sendText_thread.join()
-        self.receiveText_thread.join()

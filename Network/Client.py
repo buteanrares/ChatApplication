@@ -1,17 +1,20 @@
-import socket
+import threading
 import json
 from requests import get
 from Sockets import AudioSocket, TextSocket
 
 # Network constants
-ADDR = ("127.0.0.1", 7776)
+TEXTADDR=("192.168.0.104",30310)
+AUDIOADDR=("192.168.0.104",30311)
 
 class Client:
 
     def __init__(self) -> None:
         super().__init__()
-        self.TextSocket = TextSocket.TextSocket(ADDR)
-        self.AudioSocket = AudioSocket.AudioSocket(ADDR)
+        self.printClientData()
+        self.TextSocket = TextSocket.TextSocket(TEXTADDR)
+        self.AudioSocket = AudioSocket.AudioSocket(AUDIOADDR)
+
     
     
     @staticmethod
@@ -27,12 +30,6 @@ class Client:
 
     def run(self):
         self.printClientData()
-        
-        self.TextSocket.startTextThreads()
-        self.AudioSocket.startAudioStream()
-
-        self.TextSocket.stopTextThreads()
 
 
 client = Client()
-client.run()
