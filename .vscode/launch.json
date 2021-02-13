@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${file}",
             "cwd": "${workspaceRoot}",
-            "env": {"PYTHONPATH": "${workspaceRoot}"},
+            "env": {"PYTHONPATH": "${workspaceRoot};${workspaceRoot}/Domain;${workspaceRoot}/Network;${workspaceRoot}/Network/Sockets"},
             "console": "integratedTerminal",
         }
     ]

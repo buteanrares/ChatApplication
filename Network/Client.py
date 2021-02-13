@@ -1,30 +1,18 @@
-import threading
 import socket
 import json
 from requests import get
-import pyaudio
+from Sockets import AudioSocket, TextSocket
 
 # Network constants
-ADDR = ("192.168.0.103", 7777)
-
-# Audio constants
-FORMAT = pyaudio.paInt16
-CHANNELS = 1
-RATE = 44100
-CHUNK = 4096
+ADDR = ("127.0.0.1", 7776)
 
 class Client:
 
     def __init__(self) -> None:
         super().__init__()
-
-        #Network fields
-        self.clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.clientSocket.connect(ADDR)
-
-        #Audio fields
-        self.pyaudio = pyaudio.PyAudio()
-        self.stream=None
+        self.TextSocket = TextSocket.TextSocket(ADDR)
+        self.AudioSocket = AudioSocket.AudioSocket(ADDR)
+    
     
     @staticmethod
     def printClientData():
@@ -37,45 +25,13 @@ class Client:
         print("   City: {}\n\n".format(data["city"]))
 
 
-    def handleStartAudioStream(self):
-        self.stream = self.pyaudio.open(format=FORMAT, channels=CHANNELS, rate=RATE, output=True, frames_per_buffer=CHUNK)
-
-
-    def handleSend(self):
-        while True:
-            print("Response: ", end="")
-            msg = input()
-            self.clientSocket.send(msg.encode())
-
-
-    def handleReceiveText(self):
-        while True:
-            recvMsg = self.clientSocket.recv(1024)
-            recvMsg = recvMsg.decode()
-            print(recvMsg)
-
-
-    def handleReceiveAudio(self):
-        while True:
-            data = self.clientSocket.recv(CHUNK)
-            self.stream.write(data)
-
-
     def run(self):
         self.printClientData()
-        self.handleStartAudioStream()
+        
+        self.TextSocket.startTextThreads()
+        self.AudioSocket.startAudioStream()
 
-        send_thread = threading.Thread(target=self.handleSend)
-        receiveText_thread = threading.Thread(target=self.handleReceiveText)
-        receiveAudio_thread = threading.Thread(target=self.handleReceiveAudio)
-
-        send_thread.start()
-        receiveText_thread.start()
-        receiveAudio_thread.start()
-
-        send_thread.join()
-        receiveText_thread.join()
-        receiveAudio_thread.join()
+        self.TextSocket.stopTextThreads()
 
 
 client = Client()
