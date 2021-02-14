@@ -21,6 +21,7 @@ class AudioSocket:
         receive_thread = threading.Thread(target=self.receive_server_data).start()
         self.send_data_to_server()
 
+
     def receive_server_data(self):
         while True:
             try:
