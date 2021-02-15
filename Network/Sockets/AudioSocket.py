@@ -2,7 +2,7 @@ import socket
 import pyaudio
 import threading
 
-chunk_size = 4096 # 512
+chunk_size = 4096 # 4kb
 audio_format = pyaudio.paInt16
 channels = 1
 rate = 20000

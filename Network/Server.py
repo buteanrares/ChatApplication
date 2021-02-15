@@ -3,8 +3,8 @@ import threading
 from Domain.User import User
 
 
-TEXTADDR=("",30310)
-AUDIOADDR=("",30311)
+TEXTADDR=("",7777)
+AUDIOADDR=("",7778)
 
 class Server:
     def __init__(self):
