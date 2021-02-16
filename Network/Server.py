@@ -50,6 +50,9 @@ class Server:
         while True:
             data = c.recv(4096)
             self.broadcastAudio(c, data)
+    
+    #
+    #
 
 
     #
@@ -95,10 +98,11 @@ class Server:
             elif target == "global":
                 user.getTextSocket().send(msg)
 
+    #
+    #
+
 
     def start(self):
-        # Functia principala - creaza si porneste thread-ul pt fiecare client nou conectat
-
         self.setup()
         print("\nWaiting for clients...")
         threading.Thread(target=self.acceptTextConnections).start()
