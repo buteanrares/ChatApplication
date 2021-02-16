@@ -16,7 +16,6 @@ class Client:
         self.AudioSocket = AudioSocket.AudioSocket(AUDIOADDR)
 
     
-    
     @staticmethod
     def printClientData():
         print("\nFetching data...")
