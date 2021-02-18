@@ -32,7 +32,6 @@ class Server:
         self.AudioSocket.listen(100)
         while True:
             c, addr = self.AudioSocket.accept()
-            print("New AUDIO socket connection")
             self.audioConnections.append(c)
             threading.Thread(target=self.handleClientAudio,args=(c,addr,)).start()
 
@@ -63,7 +62,6 @@ class Server:
         self.TextSocket.listen(100)
         while True:
             textSocket, clientAddress = self.TextSocket.accept()
-            print("New TEXT socket connection")
             print("[%s:%s] has connected." % clientAddress)
             threading.Thread(target=self.handleClientText, args=(textSocket, clientAddress)).start()
 
@@ -108,3 +106,4 @@ class Server:
         threading.Thread(target=self.acceptTextConnections).start()
         threading.Thread(target=self.acceptAudioConnections).start()
         
+# %%
