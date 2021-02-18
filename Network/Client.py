@@ -4,8 +4,8 @@ from requests import get
 from Sockets import AudioSocket, TextSocket
 
 # Network constants
-TEXTADDR=("79.113.38.145",7777)
-AUDIOADDR=("79.113.38.145",7778)
+TEXTADDR=("79.113.41.18",7777)
+AUDIOADDR=("79.113.41.18",7778)
 
 class Client:
 
