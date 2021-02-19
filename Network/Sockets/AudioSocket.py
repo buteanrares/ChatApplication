@@ -8,6 +8,7 @@ channels = 1
 rate = 20000
 
 class AudioSocket:
+    # Audio socket class
 
     def __init__(self,ADDR) -> None:
         self.socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -23,6 +24,8 @@ class AudioSocket:
 
 
     def receive_server_data(self):
+        # Receives audio data from server
+        
         while True:
             try:
                 data = self.socket.recv(4096)
@@ -32,6 +35,8 @@ class AudioSocket:
 
 
     def send_data_to_server(self):
+        #Sends audio data to server
+
         while True:
             try:
                 data = self.recording_stream.read(4096)

@@ -7,16 +7,19 @@ TEXTADDR=("",7777)
 AUDIOADDR=("",7778)
 
 class Server:
+    # Server class
+
     def __init__(self):
         # Constructor
         super().__init__()
         self.audioConnections=[]
         self.users = {}
-        self.TextSocket=None
-        self.AudioSocket=None
+        self.TextSocket=None     # Socket holding text transfer
+        self.AudioSocket=None    # Socket holding audio transfer
 
 
     def setup(self):
+        # Server setup
         self.TextSocket=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.TextSocket.bind(TEXTADDR)
 
@@ -29,6 +32,8 @@ class Server:
     #
 
     def acceptAudioConnections(self):
+        # Starts accepting new audio connections and forwards them to client handlers.
+
         self.AudioSocket.listen(100)
         while True:
             c, addr = self.AudioSocket.accept()
@@ -37,6 +42,7 @@ class Server:
 
 
     def broadcastAudio(self, sock, data):
+        # Broadcasts audio message to every client in the server, except the sender
         for client in self.audioConnections:
             if client != self.AudioSocket and client != sock:
                 try:
@@ -46,19 +52,21 @@ class Server:
 
 
     def handleClientAudio(self,c,addr):
+        # Receives and forwards audio message to broadcast method
+        # TO BE USED WITH A THREAD
+
         while True:
             data = c.recv(4096)
             self.broadcastAudio(c, data)
     
-    #
-    #
-
 
     #
     # TEXT HANDLING
     #
 
     def acceptTextConnections(self):
+        # Starts accepting new text connections and forwards them to client handlers.
+
         self.TextSocket.listen(100)
         while True:
             textSocket, clientAddress = self.TextSocket.accept()
@@ -67,6 +75,9 @@ class Server:
 
 
     def handleClientText(self, textSocket, clientAddress):
+        # Requests a name from a new client and handles text messaging
+        # TO BE USED WITH A THREAD
+
         user = User(None, textSocket, None, clientAddress)
         user.getTextSocket().send(bytes("You have joined the server. Type '/quit' to exit.\n", "utf8"))
         user.getTextSocket().send(bytes("Type your name below:", "utf8"))
@@ -90,6 +101,8 @@ class Server:
 
 
     def broadcastText(self, msg, sender=None, target=None):
+        # Broadcasts a text message to all connected clients
+        # :param: target (string): None or "global" ; global - to everyone / None - to everyone except sender
         for user in self.users.values():
             if (user.getName() != sender and target == None):
                 user.getTextSocket().send(bytes(sender + ": ", "utf8") + msg)
@@ -101,9 +114,9 @@ class Server:
 
 
     def start(self):
+        # Server startup
+
         self.setup()
         print("\nWaiting for clients...")
         threading.Thread(target=self.acceptTextConnections).start()
         threading.Thread(target=self.acceptAudioConnections).start()
-        
-# %%
