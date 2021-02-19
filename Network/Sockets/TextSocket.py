@@ -2,6 +2,8 @@ import socket
 import threading
 
 class TextSocket:
+    # Text socket class
+
     def __init__(self,ADDR) -> None:
         self.socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.socket.connect(ADDR)
@@ -11,16 +13,18 @@ class TextSocket:
 
 
     def sendText(self):
+        # Sends text data to server
+
         while True:
-            #print("TEXT SEND WORKING")
             print("Response: ", end="")
             msg = input()
             self.socket.send(msg.encode())
     
 
     def receiveText(self):
+        # Receives text data from server
+
         while True:
-            #print("TEXT RECEIVE WORKING")
             recvMsg = self.socket.recv(1024)
             recvMsg = recvMsg.decode()
             print(recvMsg)

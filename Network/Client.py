@@ -8,16 +8,18 @@ TEXTADDR=("79.113.41.18",7777)
 AUDIOADDR=("79.113.41.18",7778)
 
 class Client:
-
+    # Client class
     def __init__(self) -> None:
         super().__init__()
         self.printClientData()
-        self.TextSocket = TextSocket.TextSocket(TEXTADDR)
-        self.AudioSocket = AudioSocket.AudioSocket(AUDIOADDR)
+        self.TextSocket = TextSocket.TextSocket(TEXTADDR)      # Socket for text
+        self.AudioSocket = AudioSocket.AudioSocket(AUDIOADDR)  # Socket for audio
 
     
     @staticmethod
     def printClientData():
+        # Prints client data in console when client executable starts
+
         print("\nFetching data...")
         clientData = get("https://ipinfo.io").text
         data = json.loads(clientData)
@@ -27,7 +29,10 @@ class Client:
         print("   City: {}\n\n".format(data["city"]))
 
 
+    @DeprecationWarning # no longer used
     def run(self):
+        # Client startup 
+        
         self.printClientData()
 
 
