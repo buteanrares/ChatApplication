@@ -1,4 +1,3 @@
-import threading
 import json
 from requests import get
 from Sockets import AudioSocket, TextSocket
@@ -6,6 +5,7 @@ from Sockets import AudioSocket, TextSocket
 # Network constants
 TEXTADDR=("79.113.41.18",7777)
 AUDIOADDR=("79.113.41.18",7778)
+
 
 class Client:
     # Client class
@@ -31,9 +31,8 @@ class Client:
 
     @DeprecationWarning # no longer used
     def run(self):
-        # Client startup 
+        #Client startup 
         
         self.printClientData()
-
 
 client = Client()
