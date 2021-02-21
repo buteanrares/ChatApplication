@@ -5,7 +5,7 @@ window = tk.Tk()
 textBox = tk.Text(height=20,width=60)
 textBox.place(x=1,y=1)
 
-messageLabel = tk.Label(text="Message:")
+messageLabel = tk.Label()
 messageLabel.place(x=0,y=340)
 
 messageEntry = tk.Entry(width=20)
