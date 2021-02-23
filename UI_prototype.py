@@ -11,9 +11,19 @@ messageLabel.place(x=0,y=340)
 messageEntry = tk.Entry(width=35)
 messageEntry.place(x=0,y=360)
 
-sendButton = tk.Button(text="Send")
+sendButton = tk.Button(text="Send", command=sendText)
 sendButton.place(x=225,y=360)
+
+microphoneButton = tk.Button(image=,command=toggleMicrophone)
 
 window.minsize(650,400)
 
 window.mainloop()
+
+def sendText(text):
+    # TODO
+    pass
+
+def toggleMicrophone():
+    # TODO
+    pass
