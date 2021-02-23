@@ -15,6 +15,9 @@ sendButton = tk.Button(text="Send", command=sendText)
 sendButton.place(x=225,y=360)
 
 microphoneButton = tk.Button(image=,command=toggleMicrophone)
+microphoneButton.place(x=5,y=375)
+
+headphoneButton = tk.Button(image=,command=toggleHeadphone)
 
 window.minsize(650,400)
 
@@ -26,4 +29,8 @@ def sendText(text):
 
 def toggleMicrophone():
     # TODO
+    pass
+
+def toggleHeadphone():
+    # TOOD
     pass
