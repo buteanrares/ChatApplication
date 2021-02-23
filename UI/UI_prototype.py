@@ -18,6 +18,7 @@ microphoneON = tk.PhotoImage(file=r"C:\Users\butea\VSCodeProjects\Python\ChatApp
 microphoneON=microphoneON.zoom(1)
 microphoneON=microphoneON.subsample(32)
 
+
 textBox = tk.Text(height=20,width=60)
 textBox.place(x=1,y=1)
 
