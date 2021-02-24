@@ -120,3 +120,6 @@ class Server:
         print("\nWaiting for clients...")
         threading.Thread(target=self.acceptTextConnections).start()
         threading.Thread(target=self.acceptAudioConnections).start()
+
+server = Server()
+server.start()
