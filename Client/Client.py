@@ -11,9 +11,8 @@ class Client:
     # Client class
     def __init__(self) -> None:
         super().__init__()
-        self.printClientData()
-        self.TextSocket = TextSocket.TextSocket(TEXTADDR)      # Socket for text
-        self.AudioSocket = AudioSocket.AudioSocket(AUDIOADDR)  # Socket for audio
+        self.TextSocket = None      # Socket for text
+        self.AudioSocket = None  # Socket for audio
 
     
     @staticmethod
@@ -29,10 +28,12 @@ class Client:
         print("   City: {}\n\n".format(data["city"]))
 
 
-    @DeprecationWarning # no longer used
     def run(self):
         #Client startup 
         
         self.printClientData()
+        self.TextSocket = TextSocket.TextSocket(TEXTADDR)      # Socket for text
+        self.AudioSocket = AudioSocket.AudioSocket(AUDIOADDR)  # Socket for audio
 
 client = Client()
+client.run()
