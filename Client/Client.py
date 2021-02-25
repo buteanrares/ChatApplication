@@ -28,7 +28,6 @@ class Client:
         print("   City: {}\n\n".format(data["city"]))
 
 
-
     def run(self):
         #Client startup 
         
