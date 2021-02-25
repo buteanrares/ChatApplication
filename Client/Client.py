@@ -19,6 +19,7 @@ class Client:
     def printClientData():
         # Prints client data in console when client executable starts
 
+
         print("\nFetching data...")
         clientData = get("https://ipinfo.io").text
         data = json.loads(clientData)
