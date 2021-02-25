@@ -14,8 +14,7 @@ class Client:
         self.TextSocket = None      # Socket for text
         self.AudioSocket = None  # Socket for audio
 
-    
-    
+
     @staticmethod
     def printClientData():
         # Prints client data in console when client executable starts
