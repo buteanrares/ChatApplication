@@ -7,6 +7,7 @@ TEXTADDR=("79.113.41.18",7777)
 AUDIOADDR=("79.113.41.18",7778)
 
 
+
 class Client:
     # Client class
     def __init__(self) -> None:
