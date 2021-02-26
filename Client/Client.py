@@ -15,6 +15,7 @@ class Client:
         self.AudioSocket = None  # Socket for audio
 
 
+
     @staticmethod
     def printClientData():
         # Prints client data in console when client executable starts
