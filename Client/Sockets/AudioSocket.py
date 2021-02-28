@@ -2,10 +2,16 @@ import socket
 import pyaudio
 import threading
 
+
+# AUDIO CONSTANTS
+
 chunk_size = 4096 # 4kb
 audio_format = pyaudio.paInt16
 channels = 1
 rate = 20000
+
+#
+
 
 class AudioSocket:
     # Audio socket class
@@ -43,3 +49,4 @@ class AudioSocket:
                 self.socket.sendall(data)
             except:
                 pass
+
