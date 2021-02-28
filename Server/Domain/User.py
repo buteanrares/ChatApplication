@@ -19,3 +19,4 @@ class User:
 
     def setName(self, newName):
         self.name = newName
+
