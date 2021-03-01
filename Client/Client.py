@@ -38,4 +38,3 @@ class Client:
 
 client = Client()
 client.run()
-
