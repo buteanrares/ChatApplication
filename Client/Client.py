@@ -36,6 +36,7 @@ class Client:
         self.TextSocket = TextSocket.TextSocket(TEXTADDR)      # Socket for text
         self.AudioSocket = AudioSocket.AudioSocket(AUDIOADDR)  # Socket for audio
 
+
 client = Client()
 client.run()
 
