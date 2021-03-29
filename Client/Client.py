@@ -2,19 +2,20 @@ import json
 from requests import get
 from Sockets import AudioSocket, TextSocket
 
-# Network constants
-TEXTADDR=("79.113.41.18",7777)
-AUDIOADDR=("79.113.41.18",7778)
-
-
 
 class Client:
     # Client class
     def __init__(self) -> None:
         super().__init__()
         self.TextSocket = None      # Socket for text
-        self.AudioSocket = None  # Socket for audio
+        self.AudioSocket = None     # Socket for audio
 
+    def connect(self):
+        ip = input("Type server's IP address: ")
+        port = int(input("Type server's port: "))
+
+        self.TextSocket = TextSocket.TextSocket((ip, port))
+        self.AudioSocket = AudioSocket.AudioSocket((ip, port+1))
 
     @staticmethod
     def printClientData():
@@ -28,14 +29,12 @@ class Client:
         print("   Region: {}".format(data["region"]))
         print("   City: {}\n\n".format(data["city"]))
 
-
     def run(self):
-        #Client startup 
-        
+        # Client startup
+
         self.printClientData()
-        self.TextSocket = TextSocket.TextSocket(TEXTADDR)      # Socket for text
-        self.AudioSocket = AudioSocket.AudioSocket(AUDIOADDR)  # Socket for audio
+        self.connect()
+
 
 client = Client()
 client.run()
-
