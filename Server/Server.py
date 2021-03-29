@@ -36,6 +36,8 @@ class Server:
                     "The requested address is not valid in its context or the port is already reserved. Try again.\n")
 
     def startThreads(self):
+        # Starts server text and audio threads
+
         threading.Thread(target=self.acceptTextConnections).start()
         threading.Thread(target=self.acceptAudioConnections).start()
 
