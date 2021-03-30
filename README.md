@@ -4,6 +4,7 @@
    - Multi-client (text + voice) chat group over TCP
    - Message sending under a chosen username
    - Concomitant text messaging and voice chat
+   - General network information is printed to client
    - Console UI both client and server side
    - Join and disconnect notifications both client and server side
 
