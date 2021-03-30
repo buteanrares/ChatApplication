@@ -1,11 +1,13 @@
-INFO
-- Chat application. Working towards friend list, messaging, calls, video calls.
+#Python two-part application using sockets, requests and threads. Host your own server or join other servers to send messages and voice chat with other participants.
 
-CURRENT WORKING FEATURES
-- Mutli-client chat group over TCP
-- Message sending and receiving under a chat username
-- Server UI and client UI implemented as console (for now)
-- Concomitant text messaging and voice chat (since 1.0)
+- Current features
+   - Multi-client (text + voice) chat group over TCP
+   - Message sending under a chosen username
+   - Concomitant text messaging and voice chat
+   - Console UI both client and server side
+   - Join and disconnect notifications both client and server side
 
-NEXT FEATURE
-- Project architecture update, stabilizing current version
+- TODO features
+   - [ ] Friend list
+   - [ ] Private messaging and calls
+   - [ ] Video calls
