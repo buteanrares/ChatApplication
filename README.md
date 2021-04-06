@@ -14,3 +14,5 @@
    - [ ] Friend list
    - [ ] Private messaging and calls
    - [ ] Video calls
+
+> NOTE: If you are unauthorized to modify router settings, I recommend using a virtual IP service (eg. Hamachi) to host the server.
