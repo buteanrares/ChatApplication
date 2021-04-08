@@ -11,6 +11,7 @@
    - Join and disconnect notifications both client and server side
 
 - TODO features
+   - [ ] GUI (prototype created, not yet implemented)
    - [ ] Friend list
    - [ ] Private messaging and calls
    - [ ] Video calls
